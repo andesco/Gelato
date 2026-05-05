@@ -8,6 +8,14 @@
     "owner": "lstb1t",
     "versions": [
       {
+        "changelog": "## [0.26.14.7] - 2026-05-05\n\n### 🐛 Bug Fixes\n\n- Revert stub\n",
+        "checksum": "0e4fb500ec0017c612db1280c400ae8c",
+        "sourceUrl": "https://github.com/lostb1t/Gelato/releases/download/v0.26.14.7/gelato_0.26.14.7.zip",
+        "targetAbi": "10.11.6.0",
+        "timestamp": "2026-05-05T16:37:10Z",
+        "version": "0.26.14.7"
+      },
+      {
         "changelog": "## [0.26.14.6] - 2026-05-05\n\n### 🐛 Bug Fixes\n\n- Return of the purge task\n",
         "checksum": "3745ad4779835509c60d62d17557c162",
         "sourceUrl": "https://github.com/lostb1t/Gelato/releases/download/v0.26.14.6/gelato_0.26.14.6.zip",
@@ -238,14 +246,6 @@
         "targetAbi": "10.11.6.0",
         "timestamp": "2026-03-19T12:10:55Z",
         "version": "0.26.7.0"
-      },
-      {
-        "changelog": "## [0.26.6.8] - 2026-03-14\n\n### 🐛 Bug Fixes\n\n- Revert query filter\n",
-        "checksum": "6e753f3ce2cdecde3dc6a963078a457a",
-        "sourceUrl": "https://github.com/lostb1t/Gelato/releases/download/v0.26.6.8/gelato_0.26.6.8.zip",
-        "targetAbi": "10.11.6.0",
-        "timestamp": "2026-03-14T07:35:07Z",
-        "version": "0.26.6.8"
       }
     ]
   }
