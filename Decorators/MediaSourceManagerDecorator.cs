@@ -560,11 +560,10 @@ public sealed class MediaSourceManagerDecorator(
         }
 
         // massive cheat. clients will direct play remote files directly. But we always want to proxy it.
-        // just fake a real file.
+        // just fake a real file. we cant stub the path tho as it brakes  probe
         if (ctx.GetActionName() == "GetPostedPlaybackInfo")
         {
             info.IsRemote = false;
-            info.Path = "/stub";
             info.Protocol = MediaProtocol.File;
         }
 
