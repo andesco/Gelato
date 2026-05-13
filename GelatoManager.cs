@@ -493,13 +493,28 @@ public sealed class GelatoManager(
             var streamGuid = s.GetGuid();
             var isNewStreamItem = !existingByGuid.TryGetValue(streamGuid, out var streamItem);
 
+            // When UseStrmDirectPlay is on and the stream has a direct HTTP URL, write a .strm
+            // file on disk containing the current CDN URL. Jellyfin hands this file's URL to the
+            // client at playback time, so video bytes go CDN → client with no server in the middle.
+            // The file is overwritten on every sync so the URL stays fresh. Torrent-only streams
+            // (no direct URL) are excluded — they still need the local proxy.
+            string? strmPath = null;
+            if (cfg.UseStrmDirectPlay && s.IsFile())
+            {
+                var strmDir = Path.Combine(appPaths.DataPath, "gelato-strm");
+                Directory.CreateDirectory(strmDir);
+                strmPath = Path.Combine(strmDir, $"{streamGuid:N}.strm");
+                File.WriteAllText(strmPath, s.Url);
+            }
+
+            var effectivePath = strmPath ?? path;
+
             if (isNewStreamItem)
             {
                 streamItem =
                     isEpisode && video is Episode e
                         ? new Episode
                         {
-                            //Id = libraryManager.GetNewItemId(path, typeof(Episode)),
                             SeriesId = e.SeriesId,
                             SeriesName = e.SeriesName,
                             SeasonId = e.SeasonId,
@@ -508,11 +523,8 @@ public sealed class GelatoManager(
                             ParentIndexNumber = e.ParentIndexNumber,
                             PremiereDate = e.PremiereDate,
                         }
-                        : new Movie
-                        {
-                            //Id = libraryManager.GetNewItemId(path, typeof(Movie))
-                        };
-                streamItem.Path = path;
+                        : new Movie { };
+                streamItem.Path = effectivePath;
                 streamItem.Id = libraryManager.GetNewItemId(streamItem.Path, streamItem.GetType());
             }
 
@@ -529,14 +541,11 @@ public sealed class GelatoManager(
             streamItem.LinkedAlternateVersions = [];
             streamItem.SetPrimaryVersionId(null);
             streamItem.PremiereDate = video.PremiereDate;
-            streamItem.Path = path;
+            streamItem.Path = effectivePath;
             streamItem.IsVirtualItem = false;
             streamItem.SetParent(parent);
 
-            // When UseStrmDirectPlay is enabled, mark HTTP streams as shortcuts so Jellyfin
-            // hands the CDN URL directly to the client instead of proxying bytes through the server.
-            // Torrent streams (no direct URL) are intentionally excluded — they still need the proxy.
-            if (cfg.UseStrmDirectPlay && s.IsFile())
+            if (strmPath is not null)
             {
                 streamItem.IsShortcut = true;
                 streamItem.ShortcutPath = s.Url;
@@ -603,9 +612,13 @@ public sealed class GelatoManager(
         {
             foreach (var staleItem in toDelete)
             {
+                if (staleItem.IsShortcut && staleItem.Path?.EndsWith(".strm", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    try { File.Delete(staleItem.Path); } catch { /* best effort */ }
+                }
                 libraryManager.DeleteItem(
                     staleItem,
-                    new DeleteOptions { DeleteFileLocation = true },
+                    new DeleteOptions { DeleteFileLocation = false },
                     true
                 );
             }
