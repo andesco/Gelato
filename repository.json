@@ -8,6 +8,14 @@
     "owner": "lstb1t",
     "versions": [
       {
+        "changelog": "## v0.27.1.0\n\n### 🔧 Refactor\n\n- UseStrmDirectPlay now writes real .strm files to disk ({DataPath}/gelato-strm/) instead of only setting in-memory properties. Jellyfin hands the .strm file's CDN URL directly to the client at playback time. Files are refreshed on every stream sync and cleaned up when streams are removed.",
+        "checksum": "9f21d4f1551ae59731fd88b957f0a7e6",
+        "sourceUrl": "https://github.com/andesco/Gelato/releases/download/v0.27.1.0/gelato_0.27.1.0.zip",
+        "targetAbi": "10.11.6.0",
+        "timestamp": "2026-05-13T19:08:43Z",
+        "version": "0.27.1.0"
+      },
+      {
         "changelog": "## v0.27.0.0\n\n### 🚀 Features\n\n- Add UseStrmDirectPlay option: when enabled, HTTP streams (e.g. Real-Debrid CDN URLs) are handed directly to the client as a redirect rather than proxied through the Jellyfin server. Torrent/P2P streams are unaffected. Option is off by default and exposed as a checkbox in the plugin config page.",
         "checksum": "22bdcd5a27626bd177a3153f199fa887",
         "sourceUrl": "https://github.com/andesco/Gelato/releases/download/v0.27.0.0/gelato_0.27.0.0.zip",
