@@ -21,6 +21,10 @@ public class PluginConfiguration : BasePluginConfiguration
     public bool P2PEnabled { get; set; } = false;
     public int P2PDLSpeed { get; set; } = 0;
     public int P2PULSpeed { get; set; } = 0;
+    // When true, HTTP streams are marked as shortcuts so the client fetches video bytes
+    // directly from the CDN URL instead of proxying through the Jellyfin server.
+    // Torrent (P2P) streams are unaffected and continue to proxy through the server.
+    public bool UseStrmDirectPlay { get; set; } = false;
     public string FFmpegAnalyzeDuration { get; set; } = "5M";
     public string FFmpegProbeSize { get; set; } = "40M";
     public bool CreateCollections { get; set; } = false;
@@ -95,6 +99,7 @@ public class UserConfig
             P2PEnabled = baseConfig.P2PEnabled,
             P2PDLSpeed = baseConfig.P2PDLSpeed,
             P2PULSpeed = baseConfig.P2PULSpeed,
+            UseStrmDirectPlay = baseConfig.UseStrmDirectPlay,
             FFmpegAnalyzeDuration = baseConfig.FFmpegAnalyzeDuration,
             FFmpegProbeSize = baseConfig.FFmpegProbeSize,
             CreateCollections = baseConfig.CreateCollections,

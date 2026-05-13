@@ -533,6 +533,20 @@ public sealed class GelatoManager(
             streamItem.IsVirtualItem = false;
             streamItem.SetParent(parent);
 
+            // When UseStrmDirectPlay is enabled, mark HTTP streams as shortcuts so Jellyfin
+            // hands the CDN URL directly to the client instead of proxying bytes through the server.
+            // Torrent streams (no direct URL) are intentionally excluded — they still need the proxy.
+            if (cfg.UseStrmDirectPlay && s.IsFile())
+            {
+                streamItem.IsShortcut = true;
+                streamItem.ShortcutPath = s.Url;
+            }
+            else
+            {
+                streamItem.IsShortcut = false;
+                streamItem.ShortcutPath = null;
+            }
+
             var users = streamItem.GelatoData<List<Guid>>("userIds") ?? [];
             if (!users.Contains(userId))
             {

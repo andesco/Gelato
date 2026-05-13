@@ -107,6 +107,18 @@
               </label>
             </div>
 
+            <div class="checkboxContainer checkboxContainer-withDescription">
+              <label>
+                <input is="emby-checkbox" type="checkbox" id="chkUseStrmDirectPlay" />
+                <span>STRM direct play (send CDN URL to client, no server proxying)</span>
+              </label>
+              <div class="fieldDescription">
+                When enabled, HTTP streams (e.g. Real-Debrid) are handed directly to the client as a redirect.
+                The Jellyfin server is bypassed for video bytes — the client fetches from the CDN directly.
+                Torrent/P2P streams are unaffected. Requires the client to support HTTP redirects (Infuse, native Jellyfin apps).
+              </div>
+            </div>
+
             <div class="checkboxContainer checkboxContainer-withDescription" style="margin-bottom: 0.5em;">
               <label>
                 <input is="emby-checkbox" type="checkbox" id="chkFilterUnreleased" />
@@ -294,6 +306,7 @@
         const chkExtendLocalSeriesTrees = page.querySelector('#chkExtendLocalSeriesTrees');
         const chkDisableSearch = page.querySelector('#chkDisableSearch');
         const chkFilterUnreleased = page.querySelector('#chkFilterUnreleased');
+        const chkUseStrmDirectPlay = page.querySelector('#chkUseStrmDirectPlay');
         const txtBufferDays = page.querySelector('#txtBufferDays');
         const txtFFmpegAnalyzeDuration = page.querySelector('#txtFFmpegAnalyzeDuration');
         const txtFFmpegProbeSize = page.querySelector('#txtFFmpegProbeSize');
@@ -574,6 +587,7 @@
             if (chkExtendLocalSeriesTrees) chkExtendLocalSeriesTrees.checked = cfg.ExtendLocalSeriesTrees ?? false;
             if (chkDisableSearch) chkDisableSearch.checked = cfg.DisableSearch || false;
             if (chkFilterUnreleased) chkFilterUnreleased.checked = cfg.FilterUnreleased || false;
+            if (chkUseStrmDirectPlay) chkUseStrmDirectPlay.checked = cfg.UseStrmDirectPlay ?? false;
             if (txtBufferDays) txtBufferDays.value = cfg.FilterUnreleasedBufferDays ?? 0;
             if (txtFFmpegAnalyzeDuration) txtFFmpegAnalyzeDuration.value = cfg.FFmpegAnalyzeDuration || "5M";
             if (txtFFmpegProbeSize) txtFFmpegProbeSize.value = cfg.FFmpegProbeSize || "25M";
@@ -608,6 +622,7 @@
 
             cfg.DisableSearch = chkDisableSearch.checked;
             cfg.FilterUnreleased = chkFilterUnreleased.checked;
+            cfg.UseStrmDirectPlay = chkUseStrmDirectPlay.checked;
             cfg.FilterUnreleasedBufferDays = txtBufferDays.value !== '' ? parseInt(txtBufferDays.value) : 0;
 
             cfg.FFmpegAnalyzeDuration = txtFFmpegAnalyzeDuration.value;

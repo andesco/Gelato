@@ -559,9 +559,10 @@ public sealed class MediaSourceManagerDecorator(
             }
         }
 
-        // massive cheat. clients will direct play remote files directly. But we always want to proxy it.
-        // just fake a real file. we cant stub the path tho as it brakes  probe.
-        if (ctx.GetActionName() == "GetPostedPlaybackInfo")
+        // Force Jellyfin to proxy the stream through the server rather than handing the CDN URL
+        // to the client directly. Skipped for shortcut items (UseStrmDirectPlay=true) where the
+        // intent is the opposite — let the client fetch from the CDN without the server in the middle.
+        if (ctx.GetActionName() == "GetPostedPlaybackInfo" && !(item is Video sv && sv.IsShortcut))
         {
             info.IsRemote = false;
             info.Protocol = MediaProtocol.File;
