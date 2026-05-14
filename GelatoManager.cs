@@ -431,6 +431,12 @@ public sealed class GelatoManager(
                     return null;
                 }
 
+                if (s.Url?.StartsWith("aiostreamserror.", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    _log.LogDebug("AIOStreams error stream, skipping {StreamName}", s.Name);
+                    return null;
+                }
+
                 return s;
             })
             .Where(s => s is not null)

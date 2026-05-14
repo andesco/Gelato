@@ -354,7 +354,10 @@ public sealed class MediaSourceManagerDecorator(
                 return sources;
         }
 
-        if (NeedsProbe(selected))
+        // Skip ffprobe for shortcut items (UseStrmDirectPlay CDN URLs) — the CDN requires
+        // auth that ffprobe doesn't have, so probing always fails with 401 anyway.
+        var ownerIsShortcut = owner is Video { IsShortcut: true };
+        if (NeedsProbe(selected) && !ownerIsShortcut)
         {
             var libraryOptions = _libraryManager.GetLibraryOptions(owner);
 
@@ -556,6 +559,17 @@ public sealed class MediaSourceManagerDecorator(
             {
                 info.IsRemote = true;
                 info.Path = video.ShortcutPath;
+
+                // Ensure Container is set so clients don't request /stream. (empty extension).
+                // Prefer the filename hint from Stremio; fall back to "mkv".
+                if (string.IsNullOrEmpty(info.Container))
+                {
+                    var filename = item.GelatoData<string>("filename");
+                    var ext = !string.IsNullOrEmpty(filename)
+                        ? Path.GetExtension(filename).TrimStart('.').ToLowerInvariant()
+                        : null;
+                    info.Container = string.IsNullOrEmpty(ext) ? "mkv" : ext;
+                }
             }
         }
 

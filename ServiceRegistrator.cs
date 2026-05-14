@@ -28,6 +28,7 @@ public class ServiceRegistrator : IPluginServiceRegistrator
 {
     public void RegisterServices(IServiceCollection services, IServerApplicationHost host)
     {
+        services.AddSingleton<StreamRedirectFilter>();
         services.AddSingleton<InsertActionFilter>();
         services.AddSingleton<SearchActionFilter>();
         services.AddSingleton<PlaybackInfoFilter>();
@@ -102,6 +103,7 @@ public class ServiceRegistrator : IPluginServiceRegistrator
 
         services.PostConfigure<Microsoft.AspNetCore.Mvc.MvcOptions>(o =>
         {
+            o.Filters.AddService<StreamRedirectFilter>(order: 0);
             o.Filters.AddService<InsertActionFilter>(order: 1);
             o.Filters.AddService<SearchActionFilter>(order: 2);
             o.Filters.AddService<PlaybackInfoFilter>(order: 3);
